@@ -1,10 +1,11 @@
 # Apple-Store--SQL-Analysis
 
-**Data:** Data about the apps of all genre from the Apple Store
-**Project:** Analysing the data to provide actionable recommendations to App Developers on what type of apps are benefical to create.
-**Target Audience:** App Developers
+**Data:** Data about the apps of all genre from the Apple Store<br>
+**Project:** Analysing the data to provide actionable recommendations to App Developers on what type of apps are benefical to create.<br>
+**Target Audience:** App Developers<br>
+<br><br>
 
-**SQL Code:**
+**SQL Code:**<br>
 CREATE TABLE appleStore_description AS
 
 SELECT * from appleStore_description1
@@ -21,32 +22,37 @@ UNION ALL
 
 SELECT * from appleStore_description4
 
-** Exploratory Data Analysis **
+**Exploratory Data Analysis** <br>
 
 -- Check number of Unique Apps in AppleStore --
 
 select count(DISTINCT id) as Unique_Appids
 from AppleStore
-
+<br>
 select count(DISTINCT id) as Unique_Appids
 from appleStore_description
+<br><br>
 
 -- Missing Values --
 
 select COUNT(*) as MissingValues
 from AppleStore
 where track_name is NULL or user_rating is null or prime_genre is null
+<br>
 
 select COUNT(*) as MissingValues
 from appleStore_description
 where track_name is NULL or app_desc is null
+<br>
 
 -- Apps per genre
+<br>
 
 SELECT prime_genre, count(*) as Number_of_apps
 FROM AppleStore
 Group by prime_genre
 order by Number_of_apps DESC
+<br>
 
 -- Understanding User Ratings --
 select min(user_rating) as Min_Rating,
@@ -58,72 +64,126 @@ from AppleStore
 
 -- Checking whether paid apps have more user rating than unpaid apps --
 
-select CASE
+select CASE<br>
 
-      when price > 0 then "PAID"
-      else "FREE"
-      END as App_Type,
- avg(user_rating) as Avg_Rating
- from AppleStore
- group by App_Type
- 
+
+      when price > 0 then "PAID" <br>
+
+      else "FREE"<br>
+
+      END as App_Type,<br>
+
+ avg(user_rating) as Avg_Rating<br>
+
+ from AppleStore<br>
+
+ group by App_Type<br>
+
+ <br>
+<br>
+
  -- Checking if apps that support more languages are more highly rated --
  
- select CASE
-            when lang_num <10 then "Less than 10 languages"
-            when lang_num BETWEEN 10 and 30 then " 10-30 languages"
-            else "More than 30 languages"
-            end as Supported_Languages,
-            avg(user_rating) as Avg_Ratings
- from AppleStore
- GROUP BY Supported_Languages
- Order by Avg_Ratings DESC
+ select CASE<br>
+
+            when lang_num <10 then "Less than 10 languages"<br>
+
+            when lang_num BETWEEN 10 and 30 then " 10-30 languages"<br>
+
+            else "More than 30 languages"<br>
+
+            end as Supported_Languages,<br>
+
+            avg(user_rating) as Avg_Ratings<br>
+
+ from AppleStore<br>
+
+ GROUP BY Supported_Languages<br>
+
+ Order by Avg_Ratings DESC<br>
+<br>
+<br>
+
  
  -- Check which genres have lowest rating --
  
- select prime_genre, avg(user_rating) as Avg_Ratings
- from AppleStore
- GROUP by prime_genre
- order by Avg_Ratings ASC
+ select prime_genre, avg(user_rating) as Avg_Ratings<br>
+
+ from AppleStore<br>
+
+ GROUP by prime_genre<br>
+
+ order by Avg_Ratings ASC<br>
+<br>
+<br>
+
  
  -- Check if there is a co-relation between app description length and user ratings --
  
- SELECT case 
- when length(b.app_desc)< 500 then "Short Desc"
- when length(b.app_desc) BETWEEN 500 and 1000 then "Medium Desc"
- else "Long Desc"
- end as Description_Length, avg(user_rating) as Avg_Ratings
+ SELECT case <br>
+
+ when length(b.app_desc)< 500 then "Short Desc"<br>
+
+ when length(b.app_desc) BETWEEN 500 and 1000 then "Medium Desc"<br>
+
+ else "Long Desc"<br>
+
+ end as Description_Length, avg(user_rating) as Avg_Ratings<br>
+
  
- from AppleStore as a 
- join appleStore_description as b 
- on a.id= b.id
+ from AppleStore as a <br>
+
+ join appleStore_description as b <br>
+
+ on a.id= b.id<br>
+
  
- GROUP by Description_Length
- Order By Avg_Ratings DESC
+ GROUP by Description_Length<br>
+
+ Order By Avg_Ratings DESC<br>
+<br>
+<br>
+
  
  -- 5 Top rated apps in each genre --
  
- select prime_genre, track_name, user_rating, a.Rank
+ select prime_genre, track_name, user_rating, a.Rank<br>
+
  
- from (
-   SELECT prime_genre, track_name, user_rating,
-   rank() over(partition by prime_genre order by user_rating DESC, rating_count_tot DESC) as Rank
+ from (<br>
+
+   SELECT prime_genre, track_name, user_rating,<br>
+
+   rank() over(partition by prime_genre order by user_rating DESC, rating_count_tot DESC) as Rank<br>
+
    
-   from AppleStore ) as a 
+   from AppleStore ) as a <br>
+
    
-WHERE a. Rank BETWEEN 1 and 5
+WHERE a. Rank BETWEEN 1 and 5<br>
+<br>
+<br>
+
 
  -- Top rated apps in each genre --
  
- select prime_genre, track_name, user_rating
+ select prime_genre, track_name, user_rating<br>
+
  
- from (
-   SELECT prime_genre, track_name, user_rating,
-   rank() over(partition by prime_genre order by user_rating DESC, rating_count_tot DESC) as Rank
+ from (<br>
+
+   SELECT prime_genre, track_name, user_rating,<br>
+
+   rank() over(partition by prime_genre order by user_rating DESC, rating_count_tot DESC) as Rank<br>
+
    
-   from AppleStore ) as a 
+   from AppleStore ) as a <br>
+
    
-WHERE a. Rank=1
+WHERE a. Rank=1<br>
+<br>
+<br>
+
    
 
 **Reccomendations after Analysis:**
